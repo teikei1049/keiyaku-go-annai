@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>法人提携 運用窓口のご案内</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
+
+    /* PDF印刷時に余白が出るように（A4縦・1ページ） */
+    @page { size: A4; margin: 14mm; }
+
+    :root {
+      --primary: #1e3a8a;
+      --primary-light: #eff6ff;
+      --accent: #0ea5e9;
+      --text-main: #334155;
+      --text-muted: #64748b;
+      --line: #e2e8f0;
+      --bg-body: #f1f5f9;
+      --bg-card: #ffffff;
+      --danger-bg: #fef2f2;
+      --danger-text: #b91c1c;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      color: var(--text-main);
+      line-height: 1.7;
+      background: var(--bg-body);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
+    a:hover { color: var(--primary); text-decoration: underline; }
+
+    /* 印刷ボタン（画面上のみ表示） */
+    .no-print-bar {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 100;
+      display: flex;
+      gap: 10px;
+    }
+    .printBtn {
+      appearance: none;
+      border: none;
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 12px 24px;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 10px 15px -3px rgba(30, 58, 138, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .printBtn:hover { transform: translateY(-2px); box-shadow: 0 14px 20px -3px rgba(30, 58, 138, 0.4); }
+    .printBtn:active { transform: translateY(0); }
+
+    /* メールアドレス横：コピー按钮（右寄せ） */
+    .value-row{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      justify-content:space-between;
+    }
+    .value-row .email{
+      min-width:0;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .copyBtn{
+      appearance:none;
+      border:1px solid rgba(14,165,233,.35);
+      background: rgba(14,165,233,.10);
+      color: #0369a1;
+      font-weight:700;
+      font-size:11.5px;
+      padding:6px 10px;
+      border-radius:999px;
+      cursor:pointer;
+      flex:0 0 auto;
+      white-space:nowrap;
+    }
+    .copyBtn:hover{ background: rgba(14,165,233,.16); }
+    .copyBtn:active{ transform: translateY(1px); }
+
+    /* A4シートレイアウト（画面プレビュー用） */
+    .sheet {
+      position: relative;
+      width: 210mm;
+      min-height: 297mm;
+      margin: 20px auto;
+      background: white;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      overflow: hidden;
+    }
+
+    /* 画面プレビュー時だけ内側余白（印刷は@pageの余白に合わせる） */
+    .inner {
+      padding: 18mm 20mm;
+    }
+
+    /* 装飾：右上の幾何学模様 */
+    .deco-circle {
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(14,165,233,0.08) 0%, rgba(255,255,255,0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    /* ヘッダー */
+    header {
+      margin-bottom: 22px;
+      border-bottom: 2px solid var(--primary-light);
+      padding-bottom: 18px;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 18px;
+    }
+
+    .brand-badge {
+      display: inline-block;
+      font-size: 10px;
+      padding: 4px 12px;
+      border-radius: 6px;
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+    }
+
+    .dept-info {
+      text-align: right;
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .today{
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: .02em;
+      margin-bottom: 4px;
+    }
+
+    .hero-title {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 0.05em;
+      margin: 0 0 4px;
+    }
+    .hero-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    /* コンテンツエリア */
+    .lead {
+      font-size: 13.5px;
+      margin-bottom: 22px;
+      color: var(--text-main);
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 22px 0 14px;
+      padding-left: 10px;
+      border-left: 4px solid var(--accent);
+      display: flex;
+      align-items: center;
+      letter-spacing: 0.05em;
+    }
+
+    /* グリッドレイアウト */
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    /* カードデザイン */
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.03), var(--shadow);
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .icon-box svg { width: 22px; height: 22px; }
+
+    .card.pii .icon-box { background: #ecfdf5; color: #059669; }
+    .card.pr  .icon-box { background: #f0f9ff; color: #0284c7; }
+    .card.contact .icon-box { background: #f5f3ff; color: #7c3aed; }
+
+    .card-content { flex: 1; }
+
+    .card-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin: 0 0 2px;
+      display: block;
+    }
+    .card-value {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-main);
+      margin: 0 0 4px;
+      word-break: break-all;
+    }
+    .card-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    /* 注意事項ボックス */
+    .notice-box {
+      margin-top: 10px;
+      background: var(--danger-bg);
+      border: 1px solid rgba(220, 38, 38, 0.1);
+      border-radius: var(--radius);
+      padding: 14px;
+      color: var(--danger-text);
+      font-size: 13px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .notice-icon { flex-shrink: 0; }
+    .notice-icon svg{ width:24px; height:24px; stroke: var(--danger-text); }
+
+    /* リンクボックス */
+    .link-box {
+      margin-top: 10px;
+      background: var(--bg-card);
+      border: 1px dashed var(--accent);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      font-size: 13px;
+    }
+
+    /* 物件情報：右側にQRマスを置くためのレイアウト */
+    .link-split{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .link-main{ flex: 1; min-width: 0; }
+    .link-qr{
+      width:72px;
+      height:72px;
+      border-radius:12px;
+      border: 1px dashed var(--line);
+      background:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex:0 0 auto;
+    }
+    .link-qr img{ width:100%; height:100%; object-fit:contain; }
+
+    /* 会社情報レイアウト */
+    .split-layout {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 14px;
+    }
+
+    .footer-card {
+      background: var(--bg-body);
+      border-radius: var(--radius);
+      padding: 14px;
+      border: 1px solid var(--line);
+    }
+
+    .footer-row {
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+
+    .company-logo {
+      width: 72px;
+      height: 72px;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      flex: 0 0 auto;
+    }
+    .company-logo img{ width:100%; height:100%; object-fit:contain; }
+
+    .footer-title {
+      font-size: 12px;
+      font-weight: 700;
+      margin: 0 0 6px;
+      color: var(--text-muted);
+    }
+    .footer-text {
+      font-size: 13px;
+      margin: 0;
+    }
+
+    /* QRプレースホルダ */
+    .qr-wrap{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .qr-box{
+      width:72px;
+      height:72px;
+      border-radius:12px;
+      border: 1px dashed var(--line);
+      background: #fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex:0 0 auto;
+    }
+    .qr-box img{ width:100%; height:100%; object-fit:contain; }
+    .qr-note{
+      font-size:11px;
+      color: var(--text-muted);
+      margin-top:4px;
+    }
+
+    /* 印刷時の設定（1ページに収まりやすく、余白は@pageに任せる） */
+    @media print {
+      body { background: white; }
+      .sheet {
+        margin: 0;
+        box-shadow: none;
+        width: auto;
+        min-height: auto;
+        page-break-after: avoid;
+      }
+      .inner { padding: 0; }
+      .no-print-bar, .deco-circle, .copyBtn { display: none; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .card { border: 1px solid #ddd; box-shadow: none; }
+      a { text-decoration: none; color: black; }
+
+      /* 1ページに収めるための微調整 */
+      header{ margin-bottom: 16px; padding-bottom: 14px; }
+      .lead{ margin-bottom: 16px; line-height: 1.6; }
+      .section-title{ margin: 16px 0 10px; }
+      .grid{ gap: 12px; }
+      .card{ padding: 12px 16px; }
+      .notice-box{ padding: 12px; }
+      .link-box{ padding: 10px 14px; }
+      .split-layout{ gap: 12px; }
+      .footer-card{ padding: 12px; }
+      .qr-note{ margin-top: 2px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="no-print-bar">
+    <button class="printBtn" type="button" onclick="window.print()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M6 9V2h12v7"></path>
+        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+        <path d="M6 14h12v8H6z"></path>
+      </svg>
+      PDF印刷 / 保存
+    </button>
+  </div>
+
+  <section class="sheet">
+    <div class="deco-circle"></div>
+
+    <div class="inner">
+      <header>
+        <div class="header-top">
+          <div>
+            <span class="brand-badge">INFORMATION</span>
+          </div>
+          <div class="dept-info">
+            <div class="today" id="today"></div>
+            株式会社レーベンホームビルド<br>
+            戸建営業部　ネット推進課
+          </div>
+        </div>
+        <h1 class="hero-title">法人提携 運用窓口のご案内</h1>
+        <p class="hero-sub">用途別の送付先・連絡先および個人情報の取り扱いに関するガイドライン</p>
+      </header>
+
+      <main>
+        <div class="lead">
+          この度は法人提携のご契約を賜り、誠にありがとうございます。<br>
+          スムーズな運用のため、ご紹介カードの送付先や各種お問い合わせ窓口を下記の通りご案内申し上げます。<br>
+          用途に合わせて担当窓口へご連絡いただけますようお願いいたします。
+        </div>
+
+        <div class="section-title">お問い合わせ／送付先窓口</div>
+
+        <div class="grid">
+          <div class="card contact">
+            <div class="icon-box" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <div class="card-content">
+              <span class="card-label">法人担当</span>
+              <p class="card-value">ネット推進課　迫田 幸平</p>
+              <p class="card-hint">
+                TEL：<a href="tel:0362621079">03-6262-1079</a> / 携帯：<a href="tel:07069477488">070-6947-7488</a>
+              </p>
+            </div>
+          </div>
+
+          <div class="card pr">
+            <div class="icon-box" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+            </div>
+            <div class="card-content">
+              <span class="card-label">PR情報・告知・掲載素材（ロゴ／バナー／文案など）</span>
+              <div class="card-value value-row">
+                <span class="email"><a href="mailto:sakoda.kouhei@leben-hb.co.jp">sakoda.kouhei@leben-hb.co.jp</a></span>
+                <button class="copyBtn" type="button" onclick="copyText('sakoda.kouhei@leben-hb.co.jp', this)">アドレスをコピー</button>
+              </div>
+              <p class="card-hint">告知スケジュール相談、イントラ掲載文案の確認、素材差し替えなど</p>
+            </div>
+          </div>
+
+          <div class="card pii">
+            <div class="icon-box" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+            </div>
+            <div class="card-content">
+              <span class="card-label">紹介カード・社員証コピー（個人情報を含むもの）</span>
+              <div class="card-value value-row">
+                <span class="email"><a href="mailto:hb_teikei@leben-style.jp">hb_teikei@leben-style.jp</a></span>
+                <button class="copyBtn" type="button" onclick="copyText('hb_teikei@leben-style.jp', this)">アドレスをコピー</button>
+              </div>
+              <p class="card-hint">紹介カード送付、その他個人情報を含む内容はこちらへ</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">ご留意事項</div>
+        <div class="notice-box">
+          <div class="notice-icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          </div>
+          <div>
+            <strong>【重要】誤送付防止のお願い</strong><br>
+            個人情報（紹介カード等）は <a href="mailto:hb_teikei@leben-style.jp" style="color:var(--danger-text); text-decoration:underline;">hb_teikei@leben-style.jp</a> のみへ送付してください。<br>
+            <span style="font-size:0.92em; opacity:0.85;">※担当者個人アドレス（sakoda...）への個人情報送付はお控えください。</span>
+          </div>
+        </div>
+
+        <div class="link-box">
+          <div class="link-split">
+            <div class="link-main">
+              <div>
+                <strong style="color:var(--accent);">物件情報ページ</strong>：
+                <a href="https://www.leben-establish.jp/search.html" target="_blank">https://www.leben-establish.jp/search.html</a>
+              </div>
+              <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">
+                レーベンプラッツの物件情報サイトへの直接リンクです。
+              </div>
+            </div>
+
+            <div class="link-qr" aria-label="物件情報ページ QRコード">
+              <img src="物件サイトQR.png" alt="物件情報ページ QRコード" />
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">会社情報</div>
+        <div class="split-layout">
+          <div class="footer-card">
+            <div class="footer-row">
+              <div class="company-logo" aria-label="会社ロゴ">
+                <img src="社名ロゴ.jpg" alt="株式会社レーベンホームビルド ロゴ" />
+              </div>
+              <div>
+                <p class="footer-title">株式会社レーベンホームビルド</p>
+                <p class="footer-text">
+                  〒103-0022<br>
+                  東京都中央区日本橋室町4-1-21　近三ビル8階<br>
+                  TEL：03-6262-1079
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer-card">
+            <div class="qr-wrap">
+              <div class="qr-box" aria-label="Instagram QRコード">
+                <img src="インスタQR.png" alt="Instagram QRコード" />
+              </div>
+              <div>
+                <p class="footer-title">Official Instagram</p>
+                <p class="footer-text" style="margin:0;">
+                  <a href="https://www.instagram.com/leben_platz?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank">@leben_platz</a>
+                </p>
+                <div class="qr-note">QRを読み取ってアクセスできます。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <script>
+        // NOTE: このHTMLを document.write('...') や JSテンプレート文字列（`...`）に埋め込む場合、
+        // ここでバッククォート（`）を使うと「Unexpected end of input」になりやすいので使用しません。
+
+        function copyText(text, btn){
+          function done(){
+            if(!btn) return;
+            var prev = btn.textContent;
+            btn.textContent = 'コピーしました';
+            btn.disabled = true;
+            setTimeout(function(){
+              btn.textContent = prev;
+              btn.disabled = false;
+            }, 1200);
+          }
+
+          if(navigator.clipboard && window.isSecureContext){
+            navigator.clipboard.writeText(text).then(done).catch(function(){ fallbackCopy(text, done); });
+          } else {
+            fallbackCopy(text, done);
+          }
+        }
+
+        function fallbackCopy(text, cb){
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.left = '-9999px';
+          document.body.appendChild(ta);
+          ta.focus();
+          ta.select();
+          try { document.execCommand('copy'); } catch(e) {}
+          document.body.removeChild(ta);
+          if(cb) cb();
+        }
+
+        // 令和表記の日付（先頭ラベルなし）
+        (function setToday(){
+          var el = document.getElementById('today');
+          if(!el) return;
+
+          var d = new Date();
+          var y = d.getFullYear();
+          var m = d.getMonth() + 1;
+          var day = d.getDate();
+
+          // 令和開始：2019-05-01
+          var isBeforeReiwa = (y < 2019) || (y === 2019 && (d.getMonth() < 4 || (d.getMonth() === 4 && day < 1)));
+          var reiwaYear = y - 2018;
+
+          el.textContent = isBeforeReiwa
+            ? (y + '年' + m + '月' + day + '日')
+            : ('令和' + reiwaYear + '年' + m + '月' + day + '日');
+        })();
+
+        // 軽い自己チェック（開発用。動作に影響なし）
+        (function selfTest(){
+          try {
+            console.assert(!!document.querySelector('.sheet'), 'sheetが見つかりません');
+            console.assert(!!document.getElementById('today'), 'today要素が見つかりません');
+            console.assert(!!document.querySelectorAll('.copyBtn').length, 'copyBtnが見つかりません');
+          } catch(e) {}
+        })();
+      </script>
+
+    </div>
+  </section>
+</body>
+</html>
